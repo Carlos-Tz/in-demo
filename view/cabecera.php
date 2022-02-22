@@ -1,10 +1,10 @@
 <?php
 
-    /* define('DIR_A','http://localhost:8080/local/dev/adm/in/cap_humano/'); */
-    define('DIR_A','http://inomac.test/cap_humano/');
+    define('DIR_A','http://localhost:8080/local/dev/adm/demo/cap_humano/');
+    /* define('DIR_A','http://inomac.test/cap_humano/'); */
 
-/* define('DIR_S','http://localhost:8080/local/dev/adm/in'); */
-define('DIR_S','http://inomac.test');
+define('DIR_S','http://localhost:8080/local/dev/adm/demo/');
+/* define('DIR_S','http://inomac.test'); */
 
 
 
@@ -60,7 +60,7 @@ define('DIR_S','http://inomac.test');
 
     <link href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
     
-    <link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet" crossorigin="anonymous" />
+  <!--   <link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet" crossorigin="anonymous" /> -->
 
 
 

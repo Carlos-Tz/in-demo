@@ -1,6 +1,6 @@
 <?php
    // Database Connection
-   include 'connection.php';
+   include 'connection/connection.php';
 
    // Reading value
    /* $draw = $_POST['draw'];
@@ -74,6 +74,7 @@
             $index = 0;
             $cantidad = 0;
             $p = '';
+            $u = '';
             /* $p =  array(); */
             foreach ($pro[$j] as $l => $val) :
                   /* print_r($val); echo '<br>'; */
@@ -81,12 +82,13 @@
                      /* echo $index. '----'. $val['id_prod']. '____|____' . $val['nom_prod']. '____|'.$val['cantidad']*$val['precio_compra'] .'|____' . $val['cantidad']. '____|____' . $val['precio_compra'] . '____|____' .$val['fecha_movto']. '____|____' .$val['unidad_medida'] . '<br>'; */
                      /* echo $val['nom_prod'] .'<br>';  */
                      $p = $val['nom_prod'];
+                     $u = $val['unidad_medida'];
                   endif;
                   $subtotal += $val['cantidad']*$val['precio_compra'];
                   $cantidad += $val['cantidad'];
                   $index++;
                endforeach;
-               array_push($prod_rubro, array('p'=>$p, 'subtotal'=>$subtotal, 'cantidad'=>$cantidad));
+               array_push($prod_rubro, array('p'=>$p, 'subtotal'=>$subtotal, 'cantidad'=>$cantidad, 'u'=>$u));
                /* echo 'subtotal= '.$subtotal.'<br>cantidad = '. $cantidad.'<br>';
                echo 'termina prod' . $val['id_prod'] . '<br>'; */
 
