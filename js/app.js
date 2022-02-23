@@ -1,13 +1,25 @@
-function format(d) {
+function formatE(d) {
     var tr = '';
     for (const p in d) {
-        tr += '<tr><td></td><td></td><td>' + d[p].p.toUpperCase() + '</td><td>' + d[p].cantidad + '</td><td>' + d[p].u.toUpperCase() + '</td><td>' + formatter.format(d[p].subtotal) + '</td></tr>';
+        tr += '<tr><td></td><td></td><td>' + d[p].p.toUpperCase() + '</td><td>' + d[p].cantidad.toFixed(3) + '</td><td>' + d[p].u.toUpperCase() + '</td><td>' + formatter.format(d[p].subtotal) + '</td></tr>';
     }
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
         '<tr><td></td><td></td><td>Producto</td><td>Cantidad</td><td>Unidad</td><td>Subtotal</td></tr>' +
         tr +
         '</table>';
+}
+function formatS(d) {
+    /* var tr = '';
+    for (const p in d) {
+        tr += '<tr><td></td><td></td><td>' + d[p].p.toUpperCase() + '</td><td>' + d[p].cantidad.toFixed(3) + '</td><td>' + d[p].u.toUpperCase() + '</td><td>' + formatter.format(d[p].subtotal) + '</td></tr>';
+    }
+    // `d` is the original data object for the row
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+        '<tr><td></td><td></td><td>Producto</td><td>Cantidad</td><td>Unidad</td><td>Subtotal</td></tr>' +
+        tr +
+        '</table>'; */
+        return d;
 }
 function exportTableToCSV($table, filename) {
     //rescato los títulos y las filas
@@ -94,7 +106,7 @@ function getTableEntradas(fechaI, fechaF){
         'searching': false,
         'ajax': {
             'url': 'table-entradas.php',
-            'data': { 'fechaI': fechaI/* $('#fechaInicio').val() */, 'fechaF': fechaF/* $('#fechaFin').val() */ },
+            'data': { 'fechaI': fechaI, 'fechaF': fechaF },
             'type': 'post',
         },
         'columns': [
@@ -159,7 +171,7 @@ function getTableEntradas(fechaI, fechaF){
         }
         else {
             // Open this row
-            row.child(format(row.data().productos)).show();
+            row.child(formatE(row.data().productos)).show();
             tr.addClass('shown');
         }
     });
@@ -257,7 +269,7 @@ function getTableSalidas(fechaI, fechaF){
         }
         else {
             // Open this row
-            row.child(format(row.data().productos)).show();
+            row.child(formatS(row.data().productos)).show();
             tr.addClass('shown');
         }
     });

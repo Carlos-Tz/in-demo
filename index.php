@@ -60,6 +60,13 @@ date_default_timezone_set('America/Mexico_City');
                         <th>nombre</th>
                     </tr>
                 </thead>
+                <tbody></tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2" style="text-align:right">Total:</th>
+                        <th></th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
