@@ -1,25 +1,31 @@
 function formatE(d) {
     var tr = '';
     for (const p in d) {
-        tr += '<tr><td></td><td></td><td>' + d[p].p.toUpperCase() + '</td><td>' + d[p].cantidad.toFixed(3) + '</td><td>' + d[p].u.toUpperCase() + '</td><td>' + formatter.format(d[p].subtotal) + '</td></tr>';
+        tr += '<tr><td></td><td></td><td></td><td>' + d[p].p.toUpperCase() + '</td><td>' + d[p].cantidad.toFixed(3) + '</td><td>' + d[p].u.toUpperCase() + '</td><td>' + formatter.format(d[p].subtotal) + '</td></tr>';
     }
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-        '<tr><td></td><td></td><td>Producto</td><td>Cantidad</td><td>Unidad</td><td>Subtotal</td></tr>' +
+        '<tr><td></td><td></td><td></td><td>Producto</td><td>Cantidad</td><td>Unidad</td><td>Subtotal</td></tr>' +
         tr +
         '</table>';
 }
 function formatS(d) {
-    /* var tr = '';
+    var tr = '';
     for (const p in d) {
-        tr += '<tr><td></td><td></td><td>' + d[p].p.toUpperCase() + '</td><td>' + d[p].cantidad.toFixed(3) + '</td><td>' + d[p].u.toUpperCase() + '</td><td>' + formatter.format(d[p].subtotal) + '</td></tr>';
+        tr += '<tr><td></td><td></td><td></td><td>' + d[p].p.toUpperCase() + '</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+        for (const p_r in d[p].ranc_prod){
+            tr += '<tr><td></td><td></td><td></td><td></td><td>' + d[p].ranc_prod[p_r].r.toUpperCase() + '</td><td></td><td></td><td></td><td></td><td></td></tr>';
+            for (const r_s in d[p].ranc_prod[p_r].sect_prod){
+                tr += '<tr><td></td><td></td><td></td><td></td><td></td><td>' + d[p].ranc_prod[p_r].sect_prod[r_s].s.toUpperCase() + '</td><td>' + d[p].ranc_prod[p_r].sect_prod[r_s].cant_s.toFixed(3) + '</td><td>' + d[p].ranc_prod[p_r].sect_prod[r_s].u.toUpperCase() + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].sect_prod[r_s].subt_sec) + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].sect_prod[r_s].cost_h) + '</td></tr>';
+            }
+        }
     }
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-        '<tr><td></td><td></td><td>Producto</td><td>Cantidad</td><td>Unidad</td><td>Subtotal</td></tr>' +
+        '<tr><td></td><td></td><td></td><td>Producto</td><td>Rancho</td><td>Sector</td><td>Cantidad</td><td>Unidad</td><td>Subtotal</td><td>Costo por héctarea</td</tr>' +
         tr +
-        '</table>'; */
-        return d;
+        '</table>';
+        /* return d; */
 }
 function exportTableToCSV($table, filename) {
     //rescato los títulos y las filas

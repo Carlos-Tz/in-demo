@@ -55,9 +55,9 @@ date_default_timezone_set('America/Mexico_City');
             <table class="table table-striped table-bordered table-hover" id="table-salidas" class="display" style="width:100%">
                 <thead>
                     <tr>
-                        <th>id</th>
-                        <th>cantidad</th>
-                        <th>nombre</th>
+                        <th></th>
+                        <th>Rubro</th>
+                        <th>Costo</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
