@@ -18,11 +18,12 @@ function formatS(d) {
             for (const r_s in d[p].ranc_prod[p_r].sect_prod){
                 tr += '<tr><td></td><td></td><td></td><td></td><td></td><td>' + d[p].ranc_prod[p_r].sect_prod[r_s].s.toUpperCase() + '</td><td>' + d[p].ranc_prod[p_r].sect_prod[r_s].cant_s.toFixed(3) + '</td><td>' + d[p].ranc_prod[p_r].sect_prod[r_s].u.toUpperCase() + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].sect_prod[r_s].subt_sec) + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].sect_prod[r_s].cost_h) + '</td></tr>';
             }
+            tr += '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>Subtotal:</td><td>' + formatter.format(d[p].ranc_prod[p_r].total_s) + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].total_h) + '</td></tr>';
         }
     }
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-        '<tr><td></td><td></td><td></td><td>Producto</td><td>Rancho</td><td>Sector</td><td>Cantidad</td><td>Unidad</td><td>Subtotal</td><td>Costo por héctarea</td</tr>' +
+        '<tr><td></td><td></td><td></td><td>Producto</td><td>Rancho</td><td>Sector</td><td>Cantidad</td><td>Unidad</td><td>Costo</td><td>Costo por héctarea</td</tr>' +
         tr +
         '</table>';
         /* return d; */
@@ -100,7 +101,7 @@ function getTableEntradas(fechaI, fechaF){
                 "oSelectorOpts": { filter: 'applied', order: 'current' },
                 "sFileName": "report.xls",
                 action: function (e, dt, button, config) {
-                    exportTableToCSV.apply(this, [$('#table-entradas'), 'export.xls']);
+                    exportTableToCSV.apply(this, [$('#table-entradas'), fechaI + '_a_'+ fechaF +'__entradas.xls']);
                 },
                 exportOptions: {
                     modifier: {
@@ -199,7 +200,7 @@ function getTableSalidas(fechaI, fechaF){
                 "oSelectorOpts": { filter: 'applied', order: 'current' },
                 "sFileName": "report.xls",
                 action: function (e, dt, button, config) {
-                    exportTableToCSV.apply(this, [$('#table-salidas'), 'export.xls']);
+                    exportTableToCSV.apply(this, [$('#table-salidas'), fechaI + '_a_'+ fechaF +'__salidas.xls']);
                 },
                 exportOptions: {
                     modifier: {
@@ -292,11 +293,8 @@ $(document).ready(function () {
         }
     });
     $("#salidas").click(function() {
-        /* alert('salidas'); */
-        /* getTableSalidas($('#fechaInicio').val(), $('#fechaFin').val()); */
         if ($.fn.DataTable.isDataTable("#table-salidas")) {
             $("#table-salidas").dataTable().fnDestroy();
-            alert('destro');
             $('#table-salidas tbody').remove();
             getTableSalidas($('#fechaInicio').val(), $('#fechaFin').val());
         }else{

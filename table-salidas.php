@@ -1,18 +1,19 @@
 <?php
    // Database Connection
    include 'connection/connection.php';
-   /* $fechaI = $_POST['fechaI'];
-   $fechaF = $_POST['fechaF'] */;
+   $fechaI = $_POST['fechaI'];
+   $fechaF = $_POST['fechaF'];
 
    $rubros = ['acido', 'agroquimico', 'ferreteria', 'fertilizante', 'infraestructura', 'inocuidad', 'mano de obra', 'maq. agricola', 'mat. fumigacion', 'mat. riego', 'otros', 'papeleria', 'servicios', 'vehiculos'];
 
    /* $stmt = $conn->prepare("SELECT movtos_prod.id_prod, movtos_prod.clasificacion, movtos_prod.cantidad, movtos_prod.precio_compra, movtos_prod.fecha_movto , movtos_prod.nom_prod, producto.unidad_medida from movtos_prod, producto WHERE movtos_prod.id_prod = producto.id_prod AND (movtos_prod.tipo = 'S') AND (movtos_prod.fecha_movto BETWEEN :fechaI AND :fechaF)");
    $stmt->bindParam(':fechaI', $fechaI, PDO::PARAM_STR);
    $stmt->bindParam(':fechaF', $fechaF, PDO::PARAM_STR); */
-   $stmt = $conn->prepare("SELECT movtos_prod.id_prod, movtos_prod.clasificacion, movtos_prod.cantidad, movtos_prod.precio_compra, movtos_prod.fecha_movto , movtos_prod.nom_prod, movtos_prod.subrancho, movtos_prod.sector, producto.unidad_medida, sector.hectareas, sector.nombre from movtos_prod, producto, sector WHERE movtos_prod.id_prod = producto.id_prod AND (movtos_prod.tipo = 'S') AND (sector.nombre = movtos_prod.sector)");
+   $stmt = $conn->prepare("SELECT movtos_prod.id_prod, movtos_prod.clasificacion, movtos_prod.cantidad, movtos_prod.precio_compra, movtos_prod.fecha_movto , movtos_prod.nom_prod, movtos_prod.subrancho, movtos_prod.sector, producto.unidad_medida, sector.hectareas, sector.nombre from movtos_prod, producto, sector WHERE movtos_prod.id_prod = producto.id_prod AND (movtos_prod.tipo = 'S') AND (sector.nombre = movtos_prod.sector) AND (movtos_prod.fecha_movto BETWEEN :fechaI AND :fechaF)");
+   $stmt->bindParam(':fechaI', $fechaI, PDO::PARAM_STR);
+   $stmt->bindParam(':fechaF', $fechaF, PDO::PARAM_STR);
    $stmt->execute();
    $data = $stmt->fetchAll();
-   /* print_r($data); */
 
    $data1 = array();
 
@@ -84,11 +85,13 @@
                   /* echo $val['nom_prod'] .'<br>';  */
                   /* print_r($val_r);echo '<br>'; */
                   endforeach;
-                  $sectores_unique = array_unique($sectores, SORT_STRING);
-                  $sect_prod = array();          
-               foreach ($sectores_unique as $o => $value) :
-                  $ran_sect[$o] = array_filter($pro[$j], function ($row) use ($value){
-                     return $row['nombre'] == $value;
+                  $sectores_unique = array_unique($sectores, SORT_STRING);//print_r($sectores_unique);echo '<br>';   
+                  $sect_prod = array(); 
+                  $total_sec = 0;         
+                  $total_sec_hec = 0;         
+               foreach ($sectores_unique as $o => $value_o) :
+                  $ran_sect[$o] = array_filter($pro_rancho[$n], function ($row) use ($value_o){
+                     return $row['nombre'] == $value_o;
                   });
                   $s = '';
                   $hec = 0;
@@ -103,14 +106,18 @@
                         $u_sec = $val_s['unidad_medida'];
                      endif;
                      $subtotal_sec += $val_s['cantidad']*$val_s['precio_compra'];
-                     $cantidad_sec += $val_s['cantidad'];
+                     $cantidad_sec += $val_s['cantidad']; /* echo $cantidad_sec. '<br>'; print_r($val_s); */
                      $index_s++;
-                     endforeach;
+                     //print_r($val_s['cantidad']); echo ' prod=>'. $val_s['nom_prod']. ' sector=>'. $val_s['nombre']. ' rancho=>'. $val_s['subrancho']. '<br>';
+                     //print_r($cantidad_sec); //echo '<br>termina ';print_r($val_s); echo'<br>';
+                     endforeach; //echo 'termina rancho<br>';
                      $costo_hec = $subtotal_sec/$hec;
+                     $total_sec += $subtotal_sec;
+                     $total_sec_hec += $costo_hec;
                      array_push($sect_prod, array('s'=>$s, 'subt_sec'=>$subtotal_sec, 'cost_h'=>$costo_hec, 'cant_s'=>$cantidad_sec, 'u'=>$u_sec ));
                   endforeach;
                   //echo 'termina rancho'.$value.'<br>';
-                  array_push($ranc_prod, array('sect_prod'=>$sect_prod, 'r'=>$r));
+                  array_push($ranc_prod, array('sect_prod'=>$sect_prod, 'r'=>$r, 'total_s'=>$total_sec, 'total_h'=>$total_sec_hec));
                endforeach;
 
                //echo 'subtotal= '.$subtotal.'<br>cantidad = '. $cantidad.'<br>';
