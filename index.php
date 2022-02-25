@@ -27,7 +27,6 @@ date_default_timezone_set('America/Mexico_City');
             </div>
         </div>
 
-        <?php /* include 'table1.php' */ ?>
         <div class="container mt-5">
             <h2 style="margin-bottom: 30px;">Entradas</h2>
             <table class="table table-striped table-bordered table-hover" id="table-entradas" class="display" style="width:100%">
@@ -36,7 +35,6 @@ date_default_timezone_set('America/Mexico_City');
                         <th></th>
                         <th>Rubro</th>
                         <th>Costo</th>
-                        <!-- <th>productos</th>  --> 
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -48,7 +46,6 @@ date_default_timezone_set('America/Mexico_City');
                 </tfoot>
             </table>
         </div>
-        <?php /* include 'table-salidas.php' */ ?>
 
         <div class="container mt-5">
             <h2 style="margin-bottom: 30px;">Salidas</h2>
@@ -73,9 +70,8 @@ date_default_timezone_set('America/Mexico_City');
 </div> <!-- card-body -->
 
 <?php include "view/piePagina.php";
-/* define('DIR_J','http://inomac.test/'); */
 define('DIR_J', 'http://localhost:8080/local/dev/adm/in/');
-/*  define('DIR_J','https://pruebas.inomac.mx/ejecutivo'); */
+/*  define('DIR_J','https://pruebas.inomac.mx/ejecutivo/'); */
 ?>
 
 <script src="<?= DIR_S ?>js/app.js"></script>

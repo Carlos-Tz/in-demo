@@ -93,6 +93,9 @@ function getTableEntradas(fechaI, fechaF){
         'info': false,
         'dom': 'Bfrti',
         'stateSave': true,
+        'responsive': true,
+        "autoWidth": true,
+        "scrollX": "auto",
         'buttons': [
             {
                 extend: 'excelHtml5',
