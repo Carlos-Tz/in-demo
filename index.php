@@ -26,6 +26,7 @@ date_default_timezone_set('America/Mexico_City');
                 <button class="btn btn-outline-primary btn-block" id="salidas" name="salidas">SALIDAS</button>
             </div>
         </div>
+        <button type="button" class="btn btn-primary" onclick="descargar_Excel_Pagos()">Descargar</button>
 
         <div class="container mt-5">
             <h2 style="margin-bottom: 30px;">Entradas</h2>

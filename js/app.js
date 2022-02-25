@@ -305,3 +305,17 @@ $(document).ready(function () {
         }
     });
 });
+
+function descargar_Excel_Pagos() {
+     $.ajax({
+        url: 'table-entradas-excel.php',
+        method: 'POST',
+        data: { 'fechaI': $('#fechaInicio').val(), 'fechaF': $('#fechaFin').val() },
+        success: function(data) {
+            if (!data.error) {
+                console.log(data);
+                //window.location.href = "https://demo.inomac.mx/compras/pagos_admon2/ajax/cuentasXpagar.xlsx";
+            } else { console.log("Error en funcion") }
+      }
+  })
+}
