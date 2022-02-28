@@ -3,7 +3,7 @@
 include 'view/cabecera.php';
 date_default_timezone_set('America/Mexico_City');
 ?>
-<link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet" crossorigin="anonymous" />
+<!--<link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet" crossorigin="anonymous" />-->
 
 <div class="card-body">
     <div class="container-fluid">
@@ -26,10 +26,10 @@ date_default_timezone_set('America/Mexico_City');
                 <button class="btn btn-outline-primary btn-block" id="salidas" name="salidas">SALIDAS</button>
             </div>
         </div>
-        <button type="button" class="btn btn-primary" onclick="descargar_Excel_Pagos()">Descargar</button>
-
-        <div class="container mt-5">
+        
+        <div class="container mt-5" id="cont_e" style="display:none;">
             <h2 style="margin-bottom: 30px;">Entradas</h2>
+            <button type="button" class="btn btn-success" onclick="entradas_excel()">Excel</button>
             <table class="table table-striped table-bordered table-hover" id="table-entradas" class="display" style="width:100%">
                 <thead>
                     <tr>
@@ -47,9 +47,10 @@ date_default_timezone_set('America/Mexico_City');
                 </tfoot>
             </table>
         </div>
-
-        <div class="container mt-5">
+        
+        <div class="container mt-5" id="cont_s" style="display:none;">
             <h2 style="margin-bottom: 30px;">Salidas</h2>
+            <button type="button" class="btn btn-success" onclick="salidas_excel()">Excel</button>
             <table class="table table-striped table-bordered table-hover" id="table-salidas" class="display" style="width:100%">
                 <thead>
                     <tr>

@@ -1,6 +1,5 @@
 <?php
 require 'phpspreadsheet/vendor/autoload.php';
-/* include("conectar/conecta.php") ; */
 include 'connection/connection.php';
 
 
@@ -17,6 +16,7 @@ $stmt->bindParam(':fechaF', $fechaF, PDO::PARAM_STR);
 $stmt->execute();
 $data = $stmt->fetchAll();
 $data1 = array();
+$total_entradas = 0;
 
 foreach ($rubros as $key_rubro => $value_rubro) :
     $rub[$key_rubro] = array_filter($data, function ($row) use ($value_rubro) {
@@ -30,6 +30,7 @@ foreach ($rubros as $key_rubro => $value_rubro) :
         endforeach;
         $ids_prod_unique = array_unique($ids_prod_all, SORT_STRING);
         $prod_rubro = array();
+        $total_entradas += $tot[$key_rubro];
      foreach ($ids_prod_unique as $j => $v) :
         $pro[$j] = array_filter($rub[$key_rubro], function ($row) use ($v){
            return $row['id_prod'] == $v;
@@ -61,31 +62,51 @@ $titulo = "Entradas" ;
 $sheet->setTitle($titulo);
 $fila = 1;
 
+$sheet->setCellValue('A'.$fila, "ENTRADAS") ;
+$sheet->setCellValue('B'.$fila, $fechaI) ;
+$sheet->setCellValue('C'.$fila, "---") ;
+$sheet->setCellValue('D'.$fila, $fechaF) ;
+$fila++;
 $sheet->setCellValue('A'.$fila, "RUBRO") ;
-$sheet->setCellValue('B'.$fila, "TOTAL") ;
+$sheet->setCellValue('B'.$fila, "SUBTOTAL") ;
 $sheet->setCellValue('C'.$fila, "PRODUCTO") ;
-$sheet->setCellValue('D'.$fila, "CLASIFICACIÓN") ;
+$sheet->setCellValue('D'.$fila, "CANTIDAD") ;
 $sheet->setCellValue('E'.$fila, "UNIDAD") ;
-$sheet->setCellValue('F'.$fila, "SUBTOTAL") ;
-$sheet->getStyle('A1:H1')->getFont()->setBold(true)->setSize(12);
-$sheet->getStyle('A1:H1')->getAlignment()->setHorizontal('center');
-$sheet->getStyle('A1:H1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('009900');
-$sheet->getStyle('A1:H1')->getFont()->getColor()->setRGB('FFFFFF');
-$sheet->getStyle('E:H')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
+$sheet->setCellValue('F'.$fila, "COSTO") ;
+$sheet->getStyle('A1:F1')->getFont()->setBold(true)->setSize(12);
+$sheet->getStyle('A2:F2')->getFont()->setBold(true)->setSize(12);
+$sheet->getStyle('A1:F1')->getAlignment()->setHorizontal('center');
+$sheet->getStyle('A2:F2')->getAlignment()->setHorizontal('center');
+$sheet->getStyle('A1:F1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('00ac69');
+$sheet->getStyle('A2:F2')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('00ac69');
+$sheet->getStyle('A1:F1')->getFont()->getColor()->setRGB('FFFFFF');
+$sheet->getStyle('A2:F2')->getFont()->getColor()->setRGB('FFFFFF');
+$sheet->getStyle('F')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
+$sheet->getStyle('B')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
 /* $sheet->freezePane("A2") ; */
 $fila++;
 foreach ($data1 as $rubro):
-        $sheet->setCellValue('A'.$fila, $rubro['rubro']);
+   if ($rubro['total'] > 0):
+         $sheet->getStyle('A'.$fila.':F'.$fila)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('DAF7A6');
+        $sheet->setCellValue('A'.$fila, strtoupper($rubro['rubro']));
         $sheet->setCellValue('B'.$fila, $rubro['total']);
         $fila++ ;
         foreach ($rubro['productos'] as $producto):
-            $sheet->setCellValue('C'.$fila, $producto['p']);
+            $sheet->setCellValue('C'.$fila, strtoupper($producto['p']));
+            $sheet->getStyle('D'.$fila)->getAlignment()->setHorizontal('center');
             $sheet->setCellValue('D'.$fila, $producto['cantidad']);
-            $sheet->setCellValue('E'.$fila, $producto['u']);
+            $sheet->setCellValue('E'.$fila, strtoupper($producto['u']));
             $sheet->setCellValue('F'.$fila, $producto['subtotal']);
             $fila++;
         endforeach;
+      endif;
     endforeach;
+$sheet->getStyle('E'.$fila.':F'.$fila)->getFont()->setBold(true)->setSize(12);
+$sheet->getStyle('E'.$fila.':F'.$fila)->getFont()->getColor()->setRGB('FFFFFF');
+$sheet->getStyle('E'.$fila.':F'.$fila)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('00ac69');
+
+$sheet->setCellValue('E'.$fila, 'TOTAL: ');
+$sheet->setCellValue('F'.$fila, $total_entradas);
 $sheet->getColumnDimension("A")->setAutoSize(true);
 $sheet->getColumnDimension("B")->setAutoSize(true);
 $sheet->getColumnDimension("C")->setAutoSize(true);
@@ -93,7 +114,8 @@ $sheet->getColumnDimension("D")->setAutoSize(true);
 $sheet->getColumnDimension("E")->setAutoSize(true);
 $sheet->getColumnDimension("F")->setAutoSize(true);
 
-$filename = 'ENTRADAS.xlsx' ;
+$filename = 'entradas.xlsx' ;
+
 ob_clean();
 $writer = new Xlsx($spreadsheet);
 $writer->save($filename);

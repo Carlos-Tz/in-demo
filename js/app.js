@@ -1,82 +1,28 @@
 function formatE(d) {
     var tr = '';
     for (const p in d) {
-        tr += '<tr><td></td><td></td><td></td><td>' + d[p].p.toUpperCase() + '</td><td>' + d[p].cantidad.toFixed(3) + '</td><td>' + d[p].u.toUpperCase() + '</td><td>' + formatter.format(d[p].subtotal) + '</td></tr>';
+        tr += '<tr><td>' + d[p].p.toUpperCase() + '</td><td>' + d[p].cantidad.toFixed(3) + '</td><td>' + d[p].u.toUpperCase() + '</td><td>' + formatter.format(d[p].subtotal) + '</td></tr>';
     }
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-        '<tr><td></td><td></td><td></td><td>Producto</td><td>Cantidad</td><td>Unidad</td><td>Subtotal</td></tr>' +
+        '<tr><td>Producto</td><td>Cantidad</td><td>Unidad</td><td>Subtotal</td></tr>' +
         tr +
         '</table>';
 }
 function formatS(d) {
     var tr = '';
     for (const p in d) {
-        tr += '<tr><td></td><td></td><td></td><td>' + d[p].p.toUpperCase() + '</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+        tr += '<tr><td>' + d[p].p.toUpperCase() + '</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
         for (const p_r in d[p].ranc_prod){
-            tr += '<tr><td></td><td></td><td></td><td></td><td>' + d[p].ranc_prod[p_r].r.toUpperCase() + '</td><td></td><td></td><td></td><td></td><td></td></tr>';
-            for (const r_s in d[p].ranc_prod[p_r].sect_prod){
-                tr += '<tr><td></td><td></td><td></td><td></td><td></td><td>' + d[p].ranc_prod[p_r].sect_prod[r_s].s.toUpperCase() + '</td><td>' + d[p].ranc_prod[p_r].sect_prod[r_s].cant_s.toFixed(3) + '</td><td>' + d[p].ranc_prod[p_r].sect_prod[r_s].u.toUpperCase() + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].sect_prod[r_s].subt_sec) + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].sect_prod[r_s].cost_h) + '</td></tr>';
-            }
-            tr += '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>Subtotal:</td><td>' + formatter.format(d[p].ranc_prod[p_r].total_s) + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].total_h) + '</td></tr>';
+            tr += '<tr><td></td><td>' + d[p].ranc_prod[p_r].r.toUpperCase() + '</td><td>'+ d[p].ranc_prod[p_r].total_c.toFixed(3) +'</td><td>' + d[p].ranc_prod[p_r].sect_prod[0].u.toUpperCase() + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].total_s) + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].total_h) + '</td></tr>';
         }
     }
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-        '<tr><td></td><td></td><td></td><td>Producto</td><td>Rancho</td><td>Sector</td><td>Cantidad</td><td>Unidad</td><td>Costo</td><td>Costo por héctarea</td</tr>' +
+        '<tr><td>Producto</td><td>Rancho</td><td>Cantidad</td><td>Unidad</td><td>Costo</td><td>Costo por héctarea</td</tr>' +
         tr +
         '</table>';
         /* return d; */
-}
-function exportTableToCSV($table, filename) {
-    //rescato los títulos y las filas
-    var $Tabla_Nueva = $table.find('tr:has(td,th)');
-    // elimino la tabla interior.
-    var Tabla_Nueva2 = $Tabla_Nueva.filter(function () {
-        return (this.childElementCount != 1);
-    });
-    var $rows = Tabla_Nueva2,
-        // Temporary delimiter characters unlikely to be typed by keyboard
-        // This is to avoid accidentally splitting the actual contents
-        tmpColDelim = String.fromCharCode(11), // vertical tab character
-        tmpRowDelim = String.fromCharCode(0), // null character
-
-        colDelim = (filename.indexOf("xls") != -1) ? '"\t"' : '","',
-        rowDelim = '"\r\n"',
-        // Grab text from table into CSV formatted string
-        csv = '"' + $rows.map(function (i, row) {
-            var $row = $(row);
-            var $cols = $row.find('td:not(.hidden),th:not(.hidden)');
-            return $cols.map(function (j, col) {
-                var $col = $(col);
-                var text = $col.text()/* .replace(/\./g, '') */;
-                return text.replace('"', '""'); // escape double quotes
-            }).get().join(tmpColDelim);
-            csv = csv + '"\r\n"' + 'fin ' + '"\r\n"';
-        }).get().join(tmpRowDelim)
-            .split(tmpRowDelim).join(rowDelim)
-            .split(tmpColDelim).join(colDelim) + '"';
-    download_csv(csv, filename);
-}
-
-function download_csv(csv, filename) {
-    var csvFile;
-    var downloadLink;
-
-    // CSV FILE
-    csvFile = new Blob([csv], { type: "text/csv" });
-    // Download link
-    downloadLink = document.createElement("a");
-    // File name
-    downloadLink.download = filename;
-    // We have to create a link to the file
-    downloadLink.href = window.URL.createObjectURL(csvFile);
-    // Make sure that the link is not displayed
-    downloadLink.style.display = "none";
-    // Add the link to your DOM
-    document.body.appendChild(downloadLink);
-    // Lanzamos
-    downloadLink.click();
 }
 
 const formatter = new Intl.NumberFormat('en-US', {
@@ -91,28 +37,11 @@ function getTableEntradas(fechaI, fechaF){
         'serverSide': true,
         'serverMethod': 'post',
         'info': false,
-        'dom': 'Bfrti',
+        'dom': 'frti',
         'stateSave': true,
         'responsive': true,
         "autoWidth": true,
         "scrollX": "auto",
-        'buttons': [
-            {
-                extend: 'excelHtml5',
-                text: 'Excel',
-                titleAttr: 'Excel',
-                "oSelectorOpts": { filter: 'applied', order: 'current' },
-                "sFileName": "report.xls",
-                action: function (e, dt, button, config) {
-                    exportTableToCSV.apply(this, [$('#table-entradas'), fechaI + '_a_'+ fechaF +'__entradas.xls']);
-                },
-                exportOptions: {
-                    modifier: {
-                        page: 'current'
-                    }
-                }
-            }
-        ],
         'searching': false,
         'ajax': {
             'url': 'table-entradas.php',
@@ -193,25 +122,8 @@ function getTableSalidas(fechaI, fechaF){
         'serverSide': true,
         'serverMethod': 'post',
         'info': false,
-        'dom': 'Bfrti',
+        'dom': 'frti',
         'stateSave': true,
-        'buttons': [
-            {
-                extend: 'excelHtml5',
-                text: 'Excel',
-                titleAttr: 'Excel',
-                "oSelectorOpts": { filter: 'applied', order: 'current' },
-                "sFileName": "report.xls",
-                action: function (e, dt, button, config) {
-                    exportTableToCSV.apply(this, [$('#table-salidas'), fechaI + '_a_'+ fechaF +'__salidas.xls']);
-                },
-                exportOptions: {
-                    modifier: {
-                        page: 'current'
-                    }
-                }
-            }
-        ],
         'searching': false,
         'ajax': {
             'url': 'table-salidas.php',
@@ -285,8 +197,16 @@ function getTableSalidas(fechaI, fechaF){
     });
 }
 
-$(document).ready(function () {        
+$(document).ready(function () {     
+    /* $('#cont_e').hide();   
+    $('#cont_s').hide(); */   
     $("#entradas").click(function() {
+        if($('#cont_e').is(':hidden')){
+            $('#cont_e').show();
+        }
+        if($('#cont_s').is(':visible')){
+            $('#cont_s').hide();
+        }
         if ($.fn.DataTable.isDataTable("#table-entradas")) {
             $("#table-entradas").dataTable().fnDestroy();
             $('#table-entradas tbody').remove();
@@ -296,6 +216,12 @@ $(document).ready(function () {
         }
     });
     $("#salidas").click(function() {
+        if($('#cont_e').is(':visible')){
+            $('#cont_e').hide();
+        }
+        if($('#cont_s').is(':hidden')){
+            $('#cont_s').show();
+        }
         if ($.fn.DataTable.isDataTable("#table-salidas")) {
             $("#table-salidas").dataTable().fnDestroy();
             $('#table-salidas tbody').remove();
@@ -306,7 +232,7 @@ $(document).ready(function () {
     });
 });
 
-function descargar_Excel_Pagos() {
+function entradas_excel() {
      $.ajax({
         url: 'table-entradas-excel.php',
         method: 'POST',
@@ -314,7 +240,21 @@ function descargar_Excel_Pagos() {
         success: function(data) {
             if (!data.error) {
                 console.log(data);
-                //window.location.href = "https://demo.inomac.mx/compras/pagos_admon2/ajax/cuentasXpagar.xlsx";
+                /* window.location.href = "https://demo.inomac.mx/compras/pagos_admon2/ajax/cuentasXpagar.xlsx"; */
+                window.location.href = "http://inomac.test/entradas.xlsx";
+            } else { console.log("Error en funcion") }
+      }
+  })
+}
+function salidas_excel() {
+     $.ajax({
+        url: 'table-salidas-excel.php',
+        method: 'POST',
+        data: { 'fechaI': $('#fechaInicio').val(), 'fechaF': $('#fechaFin').val() },
+        success: function(data) {
+            if (!data.error) {
+                console.log(data);
+                window.location.href = "http://inomac.test/salidas.xlsx";
             } else { console.log("Error en funcion") }
       }
   })

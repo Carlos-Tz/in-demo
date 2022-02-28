@@ -62,6 +62,7 @@
                   $sect_prod = array(); 
                   $total_sec = 0;         
                   $total_sec_hec = 0;         
+                  $total_sec_cant = 0;         
                foreach ($sectores_unique as $o => $value_o) :
                   $ran_sect[$o] = array_filter($pro_rancho[$n], function ($row) use ($value_o){
                      return $row['nombre'] == $value_o;
@@ -83,16 +84,18 @@
                      endforeach;
                      $costo_hec = $subtotal_sec/$hec;
                      $total_sec += $subtotal_sec;
+                     $total_sec_cant += $cantidad_sec;
                      $total_sec_hec += $costo_hec;
                      array_push($sect_prod, array('s'=>$s, 'subt_sec'=>$subtotal_sec, 'cost_h'=>$costo_hec, 'cant_s'=>$cantidad_sec, 'u'=>$u_sec ));
                   endforeach;
-                  array_push($ranc_prod, array('sect_prod'=>$sect_prod, 'r'=>$r, 'total_s'=>$total_sec, 'total_h'=>$total_sec_hec));
+                  array_push($ranc_prod, array('sect_prod'=>$sect_prod, 'r'=>$r, 'total_s'=>$total_sec, 'total_h'=>$total_sec_hec, 'total_c'=>$total_sec_cant));
                endforeach;
 
                array_push($prod_rubro, array('p'=>$p, 'ranc_prod'=>$ranc_prod));
             endforeach;
-
+            if ($tot[$key_rubro] > 0):
             array_push($data1, array('rubro'=> $rubros[$key_rubro], 'total'=> $tot[$key_rubro], 'productos' => $prod_rubro));
+            endif;
          endforeach;
 
    // Response
