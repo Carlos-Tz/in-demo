@@ -1,7 +1,8 @@
 <?php
 
 $host     = 'localhost';
-$db       = 'inomac';
+/* $db       = 'inomac'; */
+$db       = 'demo';
 $user     = 'root';
 $password = '';
 

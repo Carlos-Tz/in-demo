@@ -43,11 +43,32 @@
                $index++;
                endforeach;
                $ranchos_unique = array_unique($ranchos, SORT_STRING);     
+               //print_r($ranchos_unique); print_r($v);
                $ranc_prod = array();          
             foreach ($ranchos_unique as $n => $value) :
                $pro_rancho[$n] = array_filter($pro[$j], function ($row) use ($value){
                   return $row['subrancho'] == $value;
                });
+               $sec_rancho[$n] = array_filter($data, function ($row) use ($value){
+                  return $row['subrancho'] == $value;
+               });
+               $todos_sectores = array();
+               foreach ($sec_rancho[$n] as $x => $val_x) :
+                  array_push($todos_sectores, $val_x['nombre']);
+                  endforeach;
+                  $todos_sectores_unique = array_unique($todos_sectores, SORT_STRING);  
+//                  print_r($todos_sectores_unique);
+               foreach ($todos_sectores_unique as $y => $value_y) :
+                  $ran_sect_t[$y] = array_filter($sec_rancho[$n], function ($row) use ($value_y){
+                     return $row['nombre'] == $value_y;
+                  });  //print_r($value_y); echo '-->';
+                  $sub_hh = 0;
+                  foreach ($ran_sect_t[$y] as $kk => $val_kk) :
+                     /* print_r($kk); echo '<br>'.$val_kk['hectareas'].'<br>'; */
+                     $sub_hh += $val_kk['hectareas'];
+                  endforeach; echo $value_y .' -> '. $sub_hh . '<br>';
+               endforeach;
+
                $r = '';
                $index_r = 0;
                $sectores = array();
@@ -86,6 +107,7 @@
                      $total_sec += $subtotal_sec;
                      $total_sec_cant += $cantidad_sec;
                      $total_sec_hec += $costo_hec;
+                     /* $total_ha = $value_o; */
                      array_push($sect_prod, array('s'=>$s, 'subt_sec'=>$subtotal_sec, 'cost_h'=>$costo_hec, 'cant_s'=>$cantidad_sec, 'u'=>$u_sec ));
                   endforeach;
                   array_push($ranc_prod, array('sect_prod'=>$sect_prod, 'r'=>$r, 'total_s'=>$total_sec, 'total_h'=>$total_sec_hec, 'total_c'=>$total_sec_cant));

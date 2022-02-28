@@ -3,7 +3,7 @@
 include 'view/cabecera.php';
 date_default_timezone_set('America/Mexico_City');
 ?>
-<!--<link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet" crossorigin="anonymous" />-->
+<link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 <div class="card-body">
     <div class="container-fluid">
