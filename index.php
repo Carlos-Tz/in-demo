@@ -26,6 +26,7 @@ date_default_timezone_set('America/Mexico_City');
                 <button class="btn btn-outline-primary btn-block" id="salidas" name="salidas">SALIDAS</button>
             </div>
         </div>
+        <?php /* include "table-salidas.php" */ ?>
         
         <div class="container mt-5" id="cont_e" style="display:none;">
             <h2 style="margin-bottom: 30px;">Entradas</h2>
