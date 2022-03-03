@@ -80,13 +80,16 @@
                   $sect_prod = array(); 
                   $total_sec = 0;         
                   $total_sec_hec = 0;         
-                  $total_sec_cant = 0;         
+                  $total_sec_cant = 0;   
+                  $total_ha_ranch = 0;   
+                  $dosis_ha = 0;   
                foreach ($sectores_unique as $o => $value_o) :
                   $ran_sect[$o] = array_filter($pro_rancho[$n], function ($row) use ($value_o){
                      return $row['nombre'] == $value_o;
                   });
                   $s = '';
                   $hec = 0;
+                  $total_ha = 0;
                   $index_s = 0;
                   $subtotal_sec = 0;
                   $cantidad_sec = 0;
@@ -99,17 +102,19 @@
                      $subtotal_sec += $val_s['cantidad']*$val_s['precio_compra'];
                      $cantidad_sec += $val_s['cantidad']; /* echo $cantidad_sec. '<br>'; print_r($val_s); */
                      $index_s++;
+                     $total_ha +=$val_s['hectareas'];
                      endforeach;
                      $costo_hec = $subtotal_sec/$hec;
                      $total_sec += $subtotal_sec;
                      $total_sec_cant += $cantidad_sec;
-                     /* $total_sec_hec += $costo_hec; */
-                     /* $total_ha = $value_o; */
-                     array_push($sect_prod, array('s'=>$s, 'subt_sec'=>$subtotal_sec, 'cost_h'=>$costo_hec, 'cant_s'=>$cantidad_sec, 'u'=>$u_sec ));
+                     $total_sec_hec += $costo_hec;
+                     array_push($sect_prod, array('s'=>$s, 'subt_sec'=>$subtotal_sec, 'cost_h'=>$costo_hec, 'cant_s'=>$cantidad_sec, 'u'=>$u_sec, 't_ha' => $total_ha ));
+                     $total_ha_ranch += $total_ha;
                   endforeach;
-                  //array_push($ranc_prod, array('sect_prod'=>$sect_prod, 'r'=>$r, 'total_s'=>$total_sec, 'total_h'=>$total_sec_hec, 'total_c'=>$total_sec_cant));
+                  $dosis_ha = $total_sec_cant/$total_ha_ranch;
+                  /* array_push($ranc_prod, array('sect_prod'=>$sect_prod, 'r'=>$r, 'total_s'=>$total_sec, 'total_h'=>$total_sec_hec, 'total_c'=>$total_sec_cant, 'dosis_ha'=>$dosis_ha)); */
                   $cos_ha = $total_sec/$sub_hh;
-                  array_push($ranc_prod, array('sect_prod'=>$sect_prod, 'r'=>$r, 'total_s'=>$total_sec, 'total_h'=>$cos_ha, 'total_c'=>$total_sec_cant));
+                  array_push($ranc_prod, array('sect_prod'=>$sect_prod, 'r'=>$r, 'total_s'=>$total_sec, 'total_h'=>$cos_ha, 'total_c'=>$total_sec_cant, 'dosis_ha'=>$dosis_ha));
                endforeach;
 
                array_push($prod_rubro, array('p'=>$p, 'ranc_prod'=>$ranc_prod));

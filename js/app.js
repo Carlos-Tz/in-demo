@@ -14,15 +14,14 @@ function formatS(d) {
     for (const p in d) {
         tr += '<tr><td>' + d[p].p.toUpperCase() + '</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
         for (const p_r in d[p].ranc_prod){
-            tr += '<tr><td></td><td>' + d[p].ranc_prod[p_r].r.toUpperCase() + '</td><td>'+ d[p].ranc_prod[p_r].total_c.toFixed(3) +'</td><td>' + d[p].ranc_prod[p_r].sect_prod[0].u.toUpperCase() + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].total_s) + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].total_h) + '</td></tr>';
+            tr += '<tr><td></td><td>' + d[p].ranc_prod[p_r].r.toUpperCase() + '</td><td>'+ d[p].ranc_prod[p_r].total_c.toFixed(3) +'</td><td>' + d[p].ranc_prod[p_r].sect_prod[0].u.toUpperCase() + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].total_s) + '</td><td>' + formatter.format(d[p].ranc_prod[p_r].total_h) + '</td><td>' + d[p].ranc_prod[p_r].dosis_ha.toFixed(3) + '</td></tr>';
         }
     }
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-        '<tr><td>Producto</td><td>Rancho</td><td>Cantidad</td><td>Unidad</td><td>Costo</td><td>Costo por héctarea</td</tr>' +
+        '<tr><td>Producto</td><td>Rancho</td><td>Cantidad</td><td>Unidad</td><td>Costo</td><td>Costo por héctarea</td><td>Dosis promedio por ha</td></tr>' +
         tr +
         '</table>';
-        /* return d; */
 }
 
 const formatter = new Intl.NumberFormat('en-US', {
@@ -254,7 +253,7 @@ function salidas_excel() {
         success: function(data) {
             if (!data.error) {
                 console.log(data);
-                window.location.href = "http://inomac.test/salidas.xlsx";
+                window.location.href = "http://inomac.test/salidas-e.xlsx";
             } else { console.log("Error en funcion") }
       }
   })

@@ -86,13 +86,16 @@ foreach ($rubros as $key_rubro => $value_rubro) :
               $sect_prod = array(); 
               $total_sec = 0;         
               $total_sec_hec = 0;         
-              $total_sec_cant = 0;         
+              $total_sec_cant = 0;
+              $total_ha_ranch = 0;   
+              $dosis_ha = 0;         
            foreach ($sectores_unique as $o => $value_o) :
               $ran_sect[$o] = array_filter($pro_rancho[$n], function ($row) use ($value_o){
                  return $row['nombre'] == $value_o;
               });
               $s = '';
               $hec = 0;
+              $total_ha = 0;
               $index_s = 0;
               $subtotal_sec = 0;
               $cantidad_sec = 0;
@@ -105,17 +108,20 @@ foreach ($rubros as $key_rubro => $value_rubro) :
                  $subtotal_sec += $val_s['cantidad']*$val_s['precio_compra'];
                  $cantidad_sec += $val_s['cantidad']; /* echo $cantidad_sec. '<br>'; print_r($val_s); */
                  $index_s++;
+                 $total_ha +=$val_s['hectareas'];
                  endforeach;
                  $costo_hec = $subtotal_sec/$hec;
                  $total_sec += $subtotal_sec;
                  $total_sec_cant += $cantidad_sec;
                  /* $total_sec_hec += $costo_hec; */
                  /* $total_ha = $value_o; */
-                 array_push($sect_prod, array('s'=>$s, 'subt_sec'=>$subtotal_sec, 'cost_h'=>$costo_hec, 'cant_s'=>$cantidad_sec, 'u'=>$u_sec ));
+                 array_push($sect_prod, array('s'=>$s, 'subt_sec'=>$subtotal_sec, 'cost_h'=>$costo_hec, 'cant_s'=>$cantidad_sec, 'u'=>$u_sec, 't_ha' => $total_ha ));
+                  $total_ha_ranch += $total_ha;
               endforeach;
+               $dosis_ha = $total_sec_cant/$total_ha_ranch;
               //array_push($ranc_prod, array('sect_prod'=>$sect_prod, 'r'=>$r, 'total_s'=>$total_sec, 'total_h'=>$total_sec_hec, 'total_c'=>$total_sec_cant));
               $cos_ha = $total_sec/$sub_hh;
-              array_push($ranc_prod, array('sect_prod'=>$sect_prod, 'r'=>$r, 'total_s'=>$total_sec, 'total_h'=>$cos_ha, 'total_c'=>$total_sec_cant));
+              array_push($ranc_prod, array('sect_prod'=>$sect_prod, 'r'=>$r, 'total_s'=>$total_sec, 'total_h'=>$cos_ha, 'total_c'=>$total_sec_cant, 'dosis_ha'=>$dosis_ha));
            endforeach;
 
            array_push($prod_rubro, array('p'=>$p, 'ranc_prod'=>$ranc_prod));
@@ -145,14 +151,15 @@ $sheet->setCellValue('E'.$fila, "CANTIDAD") ;
 $sheet->setCellValue('F'.$fila, "UNIDAD") ;
 $sheet->setCellValue('G'.$fila, "COSTO") ;
 $sheet->setCellValue('H'.$fila, "COSTO POR HÉCTAREA") ;
-$sheet->getStyle('A1:H1')->getFont()->setBold(true)->setSize(12);
-$sheet->getStyle('A2:H2')->getFont()->setBold(true)->setSize(12);
-$sheet->getStyle('A1:H1')->getAlignment()->setHorizontal('center');
-$sheet->getStyle('A2:H2')->getAlignment()->setHorizontal('center');
-$sheet->getStyle('A1:H1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('00ac69');
-$sheet->getStyle('A2:H2')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('00ac69');
-$sheet->getStyle('A1:H1')->getFont()->getColor()->setRGB('FFFFFF');
-$sheet->getStyle('A2:H2')->getFont()->getColor()->setRGB('FFFFFF');
+$sheet->setCellValue('I'.$fila, "DOSIS PROMEDIO POR HÉCTAREA") ;
+$sheet->getStyle('A1:I1')->getFont()->setBold(true)->setSize(12);
+$sheet->getStyle('A2:I2')->getFont()->setBold(true)->setSize(12);
+$sheet->getStyle('A1:I1')->getAlignment()->setHorizontal('center');
+$sheet->getStyle('A2:I2')->getAlignment()->setHorizontal('center');
+$sheet->getStyle('A1:I1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('00ac69');
+$sheet->getStyle('A2:I2')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('00ac69');
+$sheet->getStyle('A1:I1')->getFont()->getColor()->setRGB('FFFFFF');
+$sheet->getStyle('A2:I2')->getFont()->getColor()->setRGB('FFFFFF');
 $sheet->getStyle('G')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
 $sheet->getStyle('B')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
 $sheet->getStyle('H')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
@@ -160,7 +167,7 @@ $sheet->getStyle('H')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadshee
 $fila++;
 foreach ($data1 as $rubro):
 if ($rubro['total'] > 0):
-        $sheet->getStyle('A'.$fila.':H'.$fila)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('DAF7A6');
+        $sheet->getStyle('A'.$fila.':I'.$fila)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('DAF7A6');
         $sheet->setCellValue('A'.$fila, strtoupper($rubro['rubro']));
         $sheet->setCellValue('B'.$fila, $rubro['total']);
         $fila++ ;
@@ -170,10 +177,14 @@ if ($rubro['total'] > 0):
             foreach ($producto['ranc_prod'] as $rancho):
                 $sheet->setCellValue('D'.$fila, strtoupper($rancho['r']));
                 $sheet->getStyle('E'.$fila)->getAlignment()->setHorizontal('center');
+                $sheet->getStyle('E'.$fila)->getNumberFormat()->setFormatCode('#,##0.000');
                 $sheet->setCellValue('E'.$fila, $rancho['total_c']);
                 $sheet->setCellValue('F'.$fila, strtoupper($rancho['sect_prod'][0]['u']));
                 $sheet->setCellValue('G'.$fila, $rancho['total_s']);
                 $sheet->setCellValue('H'.$fila, $rancho['total_h']);
+                $sheet->getStyle('I'.$fila)->getAlignment()->setHorizontal('center');
+                $sheet->getStyle('I'.$fila)->getNumberFormat()->setFormatCode('#,##0.000');
+                $sheet->setCellValue('I'.$fila, $rancho['dosis_ha']);
                 $fila++;
                 endforeach;
         endforeach;
@@ -193,9 +204,10 @@ $sheet->getColumnDimension("E")->setAutoSize(true);
 $sheet->getColumnDimension("F")->setAutoSize(true);
 $sheet->getColumnDimension("G")->setAutoSize(true);
 $sheet->getColumnDimension("H")->setAutoSize(true);
+$sheet->getColumnDimension("I")->setAutoSize(true);
 
 
-$filename = 'salidas.xlsx' ;
+$filename = 'salidas-e.xlsx' ;
 	ob_clean();
 	$writer = new Xlsx($spreadsheet);
     $writer->save($filename);
